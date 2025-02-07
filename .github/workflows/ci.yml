@@ -1,7 +1,7 @@
 on:
   push:
     branches:
-      - '**'
+      - "**"
 
 jobs:
   docker-check:
@@ -18,7 +18,7 @@ jobs:
             echo "❌ Dockerfile not found!"
             exit 1
           fi
-      
+
           # Check number of stages
           STAGE_COUNT=$(grep -c '^FROM' "$DOCKERFILE")
           echo "✅ Found $STAGE_COUNT stages in the Dockerfile."
@@ -26,7 +26,7 @@ jobs:
             echo "❌ Dockerfile must have at least 2 stages (multi-stage build required)."
             exit 1
           fi
-      
+
           # Check base image
           if ! grep -q '^FROM python:3.11-buster' "$DOCKERFILE"; then
             echo "❌ Base image is not 'python:3.11-buster'"
@@ -34,7 +34,7 @@ jobs:
           else
             echo "✅ Base image is 'python:3.11-buster'"
           fi
-      
+
           # Check WORKDIR
           if ! grep -q '^WORKDIR /app' "$DOCKERFILE"; then
             echo "❌ WORKDIR is not set to '/app'"
@@ -61,35 +61,35 @@ jobs:
   deploy:
     runs-on: ubuntu-22.04
     permissions:
-      contents: 'read'
-      id-token: 'write'
+      contents: "read"
+      id-token: "write"
     needs:
       - integration-test
     steps:
       # checkout code
       - uses: actions/checkout@v4
       # authenticate with GCP with workload identity provider
-      - uses: 'google-github-actions/auth@v2'
+      - uses: "google-github-actions/auth@v2"
         id: auth
         name: Authenticate to GCP
         with:
-          project_id: 'cicd-cc-compose' # update with your project ID
-          workload_identity_provider: 'projects/594836883778/locations/global/workloadIdentityPools/github/providers/cicd-maxhayes17' # update with your Workload Identity Pool
-     # configure/login with docker
-     - name: gcloud Configure Docker
-       run: gcloud auth configure-docker us-central1-docker.pkg.dev
+          project_id: "cicd-cc-compose"
+          workload_identity_provider: "projects/594836883778/locations/global/workloadIdentityPools/github/providers/cicd-maxhayes17"
+      # configure/login with docker
+      - name: gcloud Configure Docker
+        run: gcloud auth configure-docker us-central1-docker.pkg.dev
 
-     # setup docker buildx
-     - name: Setup docker buildx
-       uses: docker/setup-buildx-action@v3
-       with:
-         platforms: linux/amd64,linux/arm64
+      # setup docker buildx
+      - name: Setup docker buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          platforms: linux/amd64,linux/arm64
 
-     # build and push the image
-     - name: Build and Push
-       uses: docker/build-push-action@v6
-       with:
-         context: ./
-         file: ./Dockerfile
-         push: true
-         tags: us-central1-docker.pkg.dev/cicd-cc-compose/docker-artifact-registry
+      # build and push the image
+      - name: Build and Push
+        uses: docker/build-push-action@v6
+        with:
+          context: ./
+          file: ./Dockerfile
+          push: true
+          tags: us-central1-docker.pkg.dev/cicd-cc-compose/docker-artifact-registry
