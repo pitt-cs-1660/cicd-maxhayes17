@@ -22,11 +22,16 @@ WORKDIR /app
 # copy application code from builder stage to app stage
 COPY --from=builder /app /app
 
+# copy /usr space from builder for packages
+COPY --from=builder /usr /usr
+
+COPY entrypoint.sh ./
+
 # expose port 8000 for FastAPI
 EXPOSE 8000
 
 # set entrypoint to entrypoint.sh
-ENTRYPOINT ["entrypoint.sh"]
+ENTRYPOINT ["./entrypoint.sh"]
 
 # set cmd for FastAPI
-CMD [ "uvicorn", "cc_compose.server:app", "--reload", "--host", "0.0.0.0", "--port", "8000" ]
+CMD ["uvicorn", "cc_compose.server:app", "--reload", "--host", "0.0.0.0", "--port", "8000"]
