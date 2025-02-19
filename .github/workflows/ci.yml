@@ -74,7 +74,7 @@ jobs:
         name: Authenticate to GCP
         with:
           project_id: "cicd-cc-compose"
-          workload_identity_provider: "projects/594836883778/locations/global/workloadIdentityPools/github-actions/providers/maxhayes17"
+          workload_identity_provider: "projects/594836883778/locations/global/workloadIdentityPools/github/providers/cicd-maxhayes17"
       # configure/login with docker
       - name: gcloud Configure Docker
         run: gcloud auth configure-docker us-central1-docker.pkg.dev
