@@ -92,4 +92,4 @@ jobs:
           context: ./
           file: ./Dockerfile
           push: true
-          tags: us-central1-docker.pkg.dev/cicd-cc-compose/docker-artifact-registry
+          tags: us-central1-docker.pkg.dev/cicd-cc-compose/docker-artifact-registry/fastapi-server:v2
