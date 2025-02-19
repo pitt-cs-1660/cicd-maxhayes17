@@ -19,6 +19,8 @@ FROM python:3.11-buster AS app
 
 WORKDIR /app
 
+COPY . .
+
 # copy application code from builder stage to app stage
 COPY --from=builder /app /app
 
