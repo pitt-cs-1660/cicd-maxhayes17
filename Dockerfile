@@ -24,8 +24,9 @@ COPY . .
 # copy application code from builder stage to app stage
 COPY --from=builder /app /app
 
-# copy /usr space from builder for packages
-COPY --from=builder /usr /usr
+# copy required dirs in userspace for running application
+COPY --from=builder /usr/local/lib /usr/local/lib
+COPY --from=builder /usr/local/bin /usr/local/bin
 
 COPY entrypoint.sh ./
 
